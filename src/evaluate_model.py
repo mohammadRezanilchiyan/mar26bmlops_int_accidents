@@ -26,7 +26,7 @@ def main():
     acc = accuracy_score(y_test, preds)
     f1 = f1_score(y_test, preds, average="weighted")
 
-    print("\n📊 Evaluation Results")
+    print("\n Evaluation Results")
     print("----------------------")
     print(f"Accuracy: {acc:.4f}")
     print(f"F1 Score:  {f1:.4f}")
