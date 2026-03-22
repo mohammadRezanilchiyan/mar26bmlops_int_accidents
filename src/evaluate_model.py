@@ -1,27 +1,39 @@
 import pandas as pd
 import joblib
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, accuracy_score, classification_report
 
-print("Loading data...")
+def main():
 
-usagers = pd.read_csv("data/usagers.csv")
+    # -----------------------------
+    # Load test data
+    # -----------------------------
+    X_test = pd.read_csv("data/preprocessed/X_test.csv")
+    y_test = pd.read_csv("data/preprocessed/y_test.csv").squeeze()
 
-y = usagers["grav"]
-X = usagers[["sexe", "catu"]]
+    # -----------------------------
+    # Load correct model
+    # -----------------------------
+    model = joblib.load("models/xgb_model.pkl")
 
-X = X.fillna(0)
+    # -----------------------------
+    # Predictions
+    # -----------------------------
+    preds = model.predict(X_test)
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+    # -----------------------------
+    # Evaluation
+    # -----------------------------
+    acc = accuracy_score(y_test, preds)
+    f1 = f1_score(y_test, preds, average="weighted")
 
-print("Loading trained model...")
+    print("\n📊 Evaluation Results")
+    print("----------------------")
+    print(f"Accuracy: {acc:.4f}")
+    print(f"F1 Score:  {f1:.4f}")
 
-model = joblib.load("models/accident_model.pkl")
+    print("\nClassification Report:\n")
+    print(classification_report(y_test, preds))
 
-predictions = model.predict(X_test)
 
-print("Evaluation results:")
-
-print(classification_report(y_test, predictions))
+if __name__ == "__main__":
+    main()

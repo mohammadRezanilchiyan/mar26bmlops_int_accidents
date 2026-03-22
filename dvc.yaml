@@ -1,0 +1,21 @@
+stages:
+  prepare:
+    cmd: python src/make_dataset.py
+    deps:
+    - data/accidents_full.csv
+    - src/make_dataset.py
+    outs:
+    - data/preprocessed
+  train:
+    cmd: python src/train_model.py
+    deps:
+    - data/preprocessed
+    - src/train_model.py
+    outs:
+    - models/xgb_model.pkl
+  evaluate:
+    cmd: python src/evaluate_model.py
+    deps:
+    - data/preprocessed
+    - models/xgb_model.pkl
+    - src/evaluate_model.py

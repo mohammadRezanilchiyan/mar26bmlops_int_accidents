@@ -1,0 +1,52 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/make_dataset.py
+    deps:
+    - path: data/accidents_full.csv
+      hash: md5
+      md5: 7438e7e45f79852d81a76966e35043ae
+      size: 339334996
+    - path: src/make_dataset.py
+      hash: md5
+      md5: e49c9b8771934d678e1a74b62e286413
+      size: 3470
+    outs:
+    - path: data/preprocessed
+      hash: md5
+      md5: 682bfeb3904b6fa79eb2c6595fc56ed8.dir
+      size: 102573430
+      nfiles: 4
+  train:
+    cmd: python src/train_model.py
+    deps:
+    - path: data/preprocessed
+      hash: md5
+      md5: 682bfeb3904b6fa79eb2c6595fc56ed8.dir
+      size: 102573430
+      nfiles: 4
+    - path: src/train_model.py
+      hash: md5
+      md5: 7e8b765b9fd2973aa0a2e030a2d6496c
+      size: 1757
+    outs:
+    - path: models/xgb_model.pkl
+      hash: md5
+      md5: 357b9b0558310e84e4482ceda18643c4
+      size: 3921802
+  evaluate:
+    cmd: python src/evaluate_model.py
+    deps:
+    - path: data/preprocessed
+      hash: md5
+      md5: 682bfeb3904b6fa79eb2c6595fc56ed8.dir
+      size: 102573430
+      nfiles: 4
+    - path: models/xgb_model.pkl
+      hash: md5
+      md5: 357b9b0558310e84e4482ceda18643c4
+      size: 3921802
+    - path: src/evaluate_model.py
+      hash: md5
+      md5: 0ae447aa27e7e9526fe81be6ff378665
+      size: 1067
