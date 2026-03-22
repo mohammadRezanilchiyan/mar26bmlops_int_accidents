@@ -111,7 +111,7 @@ def main():
     pd.DataFrame(y_train).to_csv(OUTPUT_DIR / "y_train.csv", index=False)
     pd.DataFrame(y_test).to_csv(OUTPUT_DIR / "y_test.csv", index=False)
 
-    print("Dataset prepared successfully ✅")
+    print("Dataset prepared successfully ")
 
 
 if __name__ == "__main__":
