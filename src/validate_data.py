@@ -15,7 +15,7 @@ def main():
 
     df = pd.read_csv(DATA_FILE, low_memory=False)
 
-    print("Dataset loaded successfully ✅")
+    print("Dataset loaded successfully ")
     print(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
 
     # -----------------------------
@@ -27,8 +27,8 @@ def main():
         if col not in df.columns:
             raise Exception(f"Missing required column: {col}")
 
-    print("Required columns exist ✅")
-    print("Data validation passed successfully 🎯")
+    print("Required columns exist ")
+    print("Data validation passed successfully ")
 
 
 if __name__ == "__main__":
