@@ -1,26 +1,35 @@
 import pandas as pd
 import os
 
-DATA_PATH = "data"
+DATA_FILE = "data/accidents_full.csv"
 
-files = [
-    "caracteristiques.csv",
-    "lieux.csv",
-    "vehicules.csv",
-    "usagers.csv"
-]
+def main():
 
-print("Checking datasets...")
+    print("Checking dataset...")
 
-for f in files:
-    path = os.path.join(DATA_PATH, f)
+    # -----------------------------
+    # Check merged dataset exists
+    # -----------------------------
+    if not os.path.exists(DATA_FILE):
+        raise Exception(f"Missing file: {DATA_FILE}")
 
-    if not os.path.exists(path):
-        raise Exception(f"Missing file: {f}")
+    df = pd.read_csv(DATA_FILE, low_memory=False)
 
-    df = pd.read_csv(path)
-
-    print(f"{f} loaded successfully")
+    print("Dataset loaded successfully ✅")
     print(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
 
-print("All datasets validated successfully.")
+    # -----------------------------
+    # Basic validation checks
+    # -----------------------------
+    required_cols = ["an", "grav"]
+
+    for col in required_cols:
+        if col not in df.columns:
+            raise Exception(f"Missing required column: {col}")
+
+    print("Required columns exist ✅")
+    print("Data validation passed successfully 🎯")
+
+
+if __name__ == "__main__":
+    main()

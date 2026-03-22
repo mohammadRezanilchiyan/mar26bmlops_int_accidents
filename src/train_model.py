@@ -1,34 +1,64 @@
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
+from xgboost import XGBClassifier
+from sklearn.metrics import accuracy_score, classification_report
 import joblib
-import os
+from pathlib import Path
 
-print("Loading datasets...")
+def main():
 
-usagers = pd.read_csv("data/usagers.csv")
+    # -----------------------------
+    # Load data
+    # -----------------------------
+    X_train = pd.read_csv("data/preprocessed/X_train.csv")
+    X_test  = pd.read_csv("data/preprocessed/X_test.csv")
 
-# Target variable: severity
-y = usagers["grav"]
+    y_train = pd.read_csv("data/preprocessed/y_train.csv").squeeze()
+    y_test  = pd.read_csv("data/preprocessed/y_test.csv").squeeze()
 
-# Simple features for first model
-X = usagers[["sexe", "catu"]]
+    # -----------------------------
+    # Model (best choice for your dataset)
+    # -----------------------------
+    model = XGBClassifier(
+        n_estimators=200,
+        learning_rate=0.05,
+        max_depth=6,
+        subsample=0.8,
+        colsample_bytree=0.8,
+        eval_metric="logloss",
+        random_state=42
+    )
 
-X = X.fillna(0)
+    # -----------------------------
+    # Train
+    # -----------------------------
+    model.fit(X_train, y_train)
 
-print("Splitting dataset...")
+    # -----------------------------
+    # Predict
+    # -----------------------------
+    y_pred = model.predict(X_test)
 
-X_train, X_test, y_train, y_test = train_test_split(
-    X, y, test_size=0.2, random_state=42
-)
+    # -----------------------------
+    # Evaluate (same logic as evaluate_model.py)
+    # -----------------------------
+    acc = accuracy_score(y_test, y_pred)
 
-print("Training model...")
+    print("\n📊 Training Evaluation")
+    print("----------------------")
+    print(f"Accuracy: {acc:.4f}")
+    print("\nClassification Report:\n")
+    print(classification_report(y_test, y_pred))
 
-model = RandomForestClassifier()
-model.fit(X_train, y_train)
+    # -----------------------------
+    # Save model
+    # -----------------------------
+    MODEL_DIR = Path("models")
+    MODEL_DIR.mkdir(parents=True, exist_ok=True)
 
-os.makedirs("models", exist_ok=True)
+    joblib.dump(model, MODEL_DIR / "xgb_model.pkl")
 
-joblib.dump(model, "models/accident_model.pkl")
+    print("\nModel saved successfully ✅")
 
-print("Model trained and saved.")
+
+if __name__ == "__main__":
+    main()
