@@ -5,7 +5,7 @@ The objective of this project is to try to predict the severity of road accident
 
 Predict the severity of road accidents in France using historical data. Severity can include whether there were injuries, hospitalizations, or fatalities. The predictions will help identify high-risk zones considering meteorology, geography, and accident patterns.
 
-## Author
+## Author part 1
 ### Mohammad Reza Nilchiyan 
 
 MLOps Learning Project – March 2026
