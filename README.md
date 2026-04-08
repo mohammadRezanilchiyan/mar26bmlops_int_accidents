@@ -40,14 +40,15 @@ The dataset is based on official French road accident data and includes:
 - `vehicules/` → vehicle information
 
 Final merged dataset: data/accidents_full.csv
+Final dataset shape: (106584, 55)
 
 
 target variable will usually come from usagers.grav (severity).
 
 # train/test split idea
 idea is Instead of random split we should use time split.
-Train : 2010 — 2015
-Test  : 2016
+## Train : 2010 — 2015
+## Test  : 2016
 
 ## Why?
 1. Column structures changed in 2019 
@@ -86,9 +87,11 @@ mar26bmlops_int_accidents/
 │
 ├── models/
 │         └── model.pkl                  (later)
-├── dvc.yaml                               (later)
+├── dvc.yaml                             (later)
 ├── README.md
 ├── requirements.txt
+
+
 
 
 
