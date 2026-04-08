@@ -40,7 +40,8 @@ The dataset is based on official French road accident data and includes:
 - `vehicules/` → vehicle information
 
 Final merged dataset: data/accidents_full.csv
-Final dataset shape: (106584, 55)
+
+### Final dataset shape: (106584, 55)
 
 
 target variable will usually come from usagers.grav (severity).
