@@ -1,0 +1,68 @@
+services:
+
+  postgres:
+    image: postgres:13
+    container_name: airflow_postgres
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+
+  airflow-init:
+    image: apache/airflow:2.7.2
+    depends_on:
+      - postgres
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "nHCPj9XNchnGV6f2JPC3WcSO7eKMsAmLe0p88CLpDp4="
+      _PIP_ADDITIONAL_REQUIREMENTS: "pandas scikit-learn joblib"
+    entrypoint: /bin/bash
+    command: >
+      -c "airflow db init &&
+          airflow users create --username admin --password admin --firstname admin --lastname user --role Admin --email admin@example.com || true"
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../data:/opt/airflow/data
+      - ../models:/opt/airflow/models
+
+  airflow-webserver:
+    image: apache/airflow:2.7.2
+    depends_on:
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "nHCPj9XNchnGV6f2JPC3WcSO7eKMsAmLe0p88CLpDp4="
+      AIRFLOW__WEBSERVER__SECRET_KEY: "my_super_secret_key_123"
+      _PIP_ADDITIONAL_REQUIREMENTS: "pandas scikit-learn joblib"
+      AIRFLOW__LOGGING__REMOTE_LOGGING: "False"
+    command: airflow webserver
+    ports:
+      - "8080:8080"
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../data:/opt/airflow/data
+      - ../models:/opt/airflow/models
+
+  airflow-scheduler:
+    image: apache/airflow:2.7.2
+    depends_on:
+      - airflow-init
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: "nHCPj9XNchnGV6f2JPC3WcSO7eKMsAmLe0p88CLpDp4="
+      AIRFLOW__WEBSERVER__SECRET_KEY: "my_super_secret_key_123"
+      _PIP_ADDITIONAL_REQUIREMENTS: "pandas scikit-learn joblib"
+      AIRFLOW__LOGGING__REMOTE_LOGGING: "False"
+    command: airflow scheduler
+    volumes:
+      - ../dags:/opt/airflow/dags
+      - ../data:/opt/airflow/data
+      - ../models:/opt/airflow/models
+
+volumes:
+  postgres-db-volume:
