@@ -7,37 +7,50 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 import joblib
 
-DATA_PATH = "/opt/airflow/data/accidents_full.csv"
+#DATA_PATH = "/opt/airflow/data/accidents_full.csv"
+DATA_PATH = "/opt/airflow/data/preprocessed"
 MODEL_PATH = "/opt/airflow/models/model.pkl"
-
+ 
+    
 def load_data():
-    df = pd.read_csv(DATA_PATH)
-    print("Data loaded:", df.shape)
+    df = pd.read_csv("/opt/airflow/data/preprocessed/X_train.csv")
+    #df = pd.read_csv(DATA_PATH)
+    print("Train data loaded:", df.shape)
     return "loaded"
+    #print("Data loaded:", df.shape)
+    #return "loaded"
+
 
 def preprocess():
     print("Preprocessing data...")
     return "preprocessed"
 
+
 def train_model():
     print("Training model...")
 
-    df = pd.read_csv(DATA_PATH)
+    import pandas as pd
+    from sklearn.ensemble import RandomForestClassifier
+    import joblib
+    import os
 
-    # simple example target (adjust if needed)
-    X = df.select_dtypes(include=["number"]).fillna(0)
-    y = X.iloc[:, 0]  # dummy target for demo
+    # Load already prepared datasets
+    X_train = pd.read_csv("/opt/airflow/data/preprocessed/X_train.csv")
+    y_train = pd.read_csv("/opt/airflow/data/preprocessed/y_train.csv")
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    # FIX: remove train_test_split (NOT needed)
 
-    model = RandomForestClassifier()
-    model.fit(X_train, y_train)
+    model = RandomForestClassifier(n_estimators=50)
+    model.fit(X_train, y_train.values.ravel())
 
-    os.makedirs("../models", exist_ok=True)
-    joblib.dump(model, MODEL_PATH)
+    os.makedirs("/opt/airflow/models", exist_ok=True)
 
-    print("Model saved at", MODEL_PATH)
+    joblib.dump(model, "/opt/airflow/models/model.pkl")
+
+    print("Model saved at /opt/airflow/models/model.pkl")
+
     return "trained"
+
 
 with DAG(
     dag_id="accident_pipeline_dag",
