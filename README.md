@@ -148,15 +148,29 @@ Current baseline results:
 
 SO, we continue 
 
+The full pipeline works as follows:
+- Data is versioned via DVC
+- Airflow triggers preprocessing and training
+- MLflow logs experiments
+- Model is stored and tracked
+- Docker ensures deployment consistency
+This makes the system fully reproducible and scalable.
+
+
 include MLOps structure
 
-dags/ → Airflow pipeline
+# dags/ → Airflow pipeline
 
-src/ → training + preprocessing
+# src/ → training + preprocessing
 
-docker/ → container setup
+# docker/ → container setup
 
-dvc.yaml + dvc.lock → pipeline versioning
+# dvc.yaml + dvc.lock → pipeline versioning
 
-models/ → tracked via DVC
+# models/ → tracked via DVC
 
+My Airflow DAG. It consists of three tasks:
+# load_data,  
+# preprocess,  and 
+# train_model. 
+These tasks run sequentially to ensure a reproducible pipeline.
