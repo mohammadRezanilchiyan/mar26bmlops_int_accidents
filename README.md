@@ -146,4 +146,17 @@ Current baseline results:
 - Separation of data, code, and models
 
 
+SO, we continue 
+
+include MLOps structure
+
+dags/ → Airflow pipeline
+
+src/ → training + preprocessing
+
+docker/ → container setup
+
+dvc.yaml + dvc.lock → pipeline versioning
+
+models/ → tracked via DVC
 
